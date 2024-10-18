@@ -33,7 +33,7 @@ public class OAuthClient {
         map.add("redirect_uri","http://localhost:8080/index.html");
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-        ResponseEntity<Object> response = restTemplate.exchange(Constants.OAUTH_TOKEN_URL, HttpMethod.POST, request, Object.class);
+        ResponseEntity<Object> response = restTemplate.exchange(Constants.AUTH_SERVER_URL+":8048/oauth2/token", HttpMethod.POST, request, Object.class);
         Object body = response.getBody();
 
 
