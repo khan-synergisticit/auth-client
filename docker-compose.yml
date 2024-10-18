@@ -1,0 +1,39 @@
+services:
+  mysqldb:
+    image: "mysql:8.0"
+    restart: always
+    networks:
+      - auth
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    environment:
+      MYSQL_DATABASE: users
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - mysql-data:/var/lib/mysql
+  auth:
+    build:
+      context: .
+    ports:
+      - "8090:8090"
+    networks:
+      - auth
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/users
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin
+    depends_on:
+      - mysqldb
+    volumes:
+      - .:/usr/app
+      - ./.m2:/root/.m2
+
+
+volumes:
+  mysql-data:
+networks:
+  auth:
+    name: auth
+    external: true
