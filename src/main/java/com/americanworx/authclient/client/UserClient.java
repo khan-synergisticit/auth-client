@@ -14,7 +14,7 @@ import java.util.Base64;
 
 @Component
 public class UserClient {
-    private static final String url = "http://192.168.1.129:8040";
+    private static final String url = Constants.AUTH_SERVER_URL+":8040";
 
     public ResponseEntity<JsonNode> createUser(JsonNode node) throws JsonProcessingException {
         System.out.println("client: " + node.toString());

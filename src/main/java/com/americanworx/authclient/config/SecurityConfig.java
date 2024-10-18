@@ -95,7 +95,7 @@ public class SecurityConfig {
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
                 if(accessToken != null) {
-                    redirectStrategy.sendRedirect(request, response, "http://192.168.1.253:8080?access_token=" + accessToken.getTokenValue());
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080?access_token=" + accessToken.getTokenValue());
                 }
             }
         };
