@@ -69,7 +69,8 @@ public class SecurityConfig {
                 .oauth2Login(login -> login.successHandler(successHandler))
                  .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true));
-         http.cors(cors->cors.configurationSource(corsConfigurationSource()))
+         http
+                 //.cors(cors->cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                  .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt->jwt.decoder(jwtDecoder())));
 
