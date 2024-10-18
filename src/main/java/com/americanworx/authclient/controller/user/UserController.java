@@ -28,42 +28,6 @@ public class UserController {
 
     @Autowired private UserService userService;
 
-    @Autowired private UserClient userClient;
-
-    @Autowired private JwtDecoder jwtDecoder;
-
-    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createUser(@RequestBody JsonNode json) throws JsonProcessingException {
-        System.out.println("User: " + json.toString());
-        User user = new User();
-        user.setName(json.get("name").asText());
-        user.setEmail(json.get("email").asText());
-        user.setMobileNumber(json.get("mobileNumber").asText());
-        user.setAddress(json.get("address").asText());
-        user.setCity(json.get("city").asText());
-        user.setState(json.get("state").asText());
-        user.setProfileImage(json.get("img").asText());
-        user.setPincode(json.get("pincode").asText());
-        user.setRole("ROLE_USER");
-
-        Map<String, String> map = new HashMap<>();
-        map.put("email", user.getEmail());
-        map.put("password", json.get("pass").asText());
-        map.put("role", user.getRole());
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.convertValue(map, JsonNode.class);
-        JsonNode userNode = userClient.createUser(node).getBody();
-        if(userNode != null) {
-            Integer userId = userNode.get("id").asInt();
-            System.out.println("id: " + userId);
-            user.setId(userId);
-            User savedUser = userService.createUser(user);;
-            return ResponseEntity.ok(savedUser);
-        } else {
-            return new ResponseEntity<>("Unable to create user.", HttpStatus.BAD_REQUEST);
-        }
-
-    }
 
     @RequestMapping(value = "/find", method = RequestMethod.GET)
     public ResponseEntity<?> getUserData() {
