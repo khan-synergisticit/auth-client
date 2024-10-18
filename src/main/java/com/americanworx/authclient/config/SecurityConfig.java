@@ -63,7 +63,7 @@ public class SecurityConfig {
          http
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-//                           .requestMatchers( "/getAccessToken", "/api/user/save").permitAll()
+                          .requestMatchers( "/api/user/save").permitAll()
                             .anyRequest().authenticated();
                 })
                 .oauth2Login(login -> login.successHandler(successHandler))
