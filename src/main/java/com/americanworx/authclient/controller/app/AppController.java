@@ -18,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -27,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-//@CrossOrigin(origins = Constants.SHOP_URL)
+@CrossOrigin(origins = Constants.SHOP_URL)
 public class AppController {
     @Autowired
     private AppService appService;
