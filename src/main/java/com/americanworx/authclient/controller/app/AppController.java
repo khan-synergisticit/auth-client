@@ -67,7 +67,6 @@ public class AppController {
     }
 
     @RequestMapping(value = "/save", method = {RequestMethod.POST, RequestMethod.GET}, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     public ResponseEntity<?> createUser(@RequestBody JsonNode json) throws JsonProcessingException {
         System.out.println("User: " + json.toString());
         User user = new User();

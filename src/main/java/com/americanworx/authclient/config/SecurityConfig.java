@@ -96,6 +96,7 @@ public class SecurityConfig {
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
                 if(accessToken != null) {
+                    System.out.println("AT: " + accessToken.getTokenValue());
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080?access_token=" + accessToken.getTokenValue());
                 }
             }
