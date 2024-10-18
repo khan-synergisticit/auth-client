@@ -16,7 +16,6 @@ import java.util.Base64;
 
 @Component
 public class OAuthClient {
-    private static final String url = "http://localhost:8040";
 
     public ResponseEntity<?> getAccessToken(String code) throws JsonProcessingException {
         String encodedCredentials = Base64.getEncoder().encodeToString(Constants.CLIENT_CREDENTIALS.getBytes());
@@ -30,7 +29,7 @@ public class OAuthClient {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("grant_type", "client_credentials");
         map.add("code",code);
-        map.add("redirect_uri","http://localhost:8080/index.html");
+        map.add("redirect_uri", Constants.SHOP_URL + ":8080/index.html");
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
         ResponseEntity<Object> response = restTemplate.exchange(Constants.AUTH_SERVER_URL+":8048/oauth2/token", HttpMethod.POST, request, Object.class);
