@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = Constants.SHOP_URL)
+@CrossOrigin(origins = Constants.SHOP_URL + ":8080")
 public class UserController {
 
     @Autowired private UserService userService;

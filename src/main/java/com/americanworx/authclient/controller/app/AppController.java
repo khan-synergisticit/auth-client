@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = Constants.SHOP_URL)
+@CrossOrigin(origins = Constants.SHOP_URL + ":8080")
 public class AppController {
     @Autowired
     private AppService appService;
