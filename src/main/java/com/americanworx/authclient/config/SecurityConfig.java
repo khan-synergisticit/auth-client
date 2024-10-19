@@ -66,7 +66,9 @@ public class SecurityConfig {
                             .anyRequest().authenticated();
                 })
                 .oauth2Login(login -> login.successHandler(successHandler))
-                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
+                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient()).authorizationRedirectStrategy((request, response, url) -> {
+                     System.out.println("Url: " + url);
+                 })))
                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true));
          http
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
