@@ -98,7 +98,7 @@ public class SecurityConfig {
 
                 if(accessToken != null) {
 
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080?" + accessToken.getTokenValue());
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080?code=" + accessToken.getTokenValue());
                 }
             }
         };
