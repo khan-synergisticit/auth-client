@@ -60,7 +60,7 @@ public class SecurityConfig {
          http
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                          .requestMatchers( "/save").permitAll()
+                          .requestMatchers( "/save", "/getAccessToken").permitAll()
                             .anyRequest().authenticated();
                 })
                 .oauth2Login(login -> login.successHandler(successHandler)).requestCache(cache -> cache.requestCache(new HttpSessionRequestCache()))
