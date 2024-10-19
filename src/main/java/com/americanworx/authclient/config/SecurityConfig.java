@@ -35,6 +35,7 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
@@ -65,10 +66,8 @@ public class SecurityConfig {
                           .requestMatchers( "/save").permitAll()
                             .anyRequest().authenticated();
                 })
-                .oauth2Login(login -> login.successHandler(successHandler))
-                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient()).authorizationRedirectStrategy((request, response, url) -> {
-                     System.out.println("Url: " + url);
-                 })))
+                .oauth2Login(login -> login.successHandler(successHandler)).requestCache(cache -> cache.requestCache(new HttpSessionRequestCache()))
+                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true));
          http
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
@@ -80,12 +79,13 @@ public class SecurityConfig {
 
 
         AuthenticationSuccessHandler successHandler = new AuthenticationSuccessHandler() {
-            final HttpSessionRequestCache cache = new  HttpSessionRequestCache();
+            final RequestCache cache = new  HttpSessionRequestCache();
 
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
                SavedRequest savedRequest = cache.getRequest(request, response);
+            System.out.println("savedRequest: " + savedRequest.toString());
                if (savedRequest != null) {
                    String url = savedRequest.getRedirectUrl();
                    System.out.println("Redirecting to " + url);
