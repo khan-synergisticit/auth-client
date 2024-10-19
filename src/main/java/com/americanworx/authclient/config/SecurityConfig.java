@@ -34,6 +34,8 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -50,9 +52,6 @@ public class SecurityConfig {
     private ClientRegistrationRepository clientRegistrationRepository;
     @Autowired
     private OAuth2AuthorizedClientManager authorizedClientManager;
-
-    @Autowired
-    private AppService appService;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuer;
@@ -79,8 +78,16 @@ public class SecurityConfig {
 
 
         AuthenticationSuccessHandler successHandler = new AuthenticationSuccessHandler() {
-            @Override
+            final HttpSessionRequestCache cache = new  HttpSessionRequestCache();
+
+        @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+
+               SavedRequest savedRequest = cache.getRequest(request, response);
+               if (savedRequest != null) {
+                   String url = savedRequest.getRedirectUrl();
+                   System.out.println("Redirecting to " + url);
+               }
                 OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
@@ -124,7 +131,7 @@ public class SecurityConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration ccfg = new CorsConfiguration();
-                ccfg.setAllowedOrigins(List.of("http://192.168.1.243:8080"));
+                ccfg.setAllowedOrigins(List.of(Constants.SHOP_URL + ":8080"));
                 ccfg.setAllowedMethods(Collections.singletonList("*"));
                 ccfg.setAllowCredentials(true);
                 ccfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
