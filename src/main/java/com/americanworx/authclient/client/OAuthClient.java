@@ -32,15 +32,14 @@ public class OAuthClient {
         map.add("redirect_uri", Constants.SHOP_URL + ":8080/index.html");
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-        ResponseEntity<Object> response = restTemplate.exchange(Constants.AUTH_SERVER_URL+":8048/oauth2/token", HttpMethod.POST, request, Object.class);
+        ResponseEntity<Object> response = restTemplate.exchange(Constants.AUTH_SERVER_URL+":8040/oauth2/token", HttpMethod.POST, request, Object.class);
         Object body = response.getBody();
 
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.convertValue(body, JsonNode.class);
 
-        String accessToken = node.get("access_token").asText();
-        System.out.println("Access token: " + accessToken);
+        System.out.println("Access token: " + node.toString());
         return new ResponseEntity<>(node, HttpStatus.OK);
     }
 }

@@ -60,7 +60,7 @@ public class SecurityConfig {
          http
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                          .requestMatchers( "/save").permitAll()
+                          .requestMatchers( "/save", "/getAccessToken").permitAll()
                             .anyRequest().authenticated();
                 })
                 .oauth2Login(login -> login.successHandler(successHandler)).requestCache(cache -> cache.requestCache(new HttpSessionRequestCache()))
@@ -80,30 +80,27 @@ public class SecurityConfig {
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-               SavedRequest savedRequest = cache.getRequest(request, response);
-            System.out.println("savedRequest: " + request.getQueryString());
-               if (savedRequest != null) {
-                   String url = savedRequest.getRedirectUrl();
-                   System.out.println("Redirecting to " + url);
-               }
-                OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
-                        .principal(authentication)
-                        .attributes(attrs -> {
-                            attrs.put(HttpServletRequest.class.getName(), request);
-                            attrs.put(HttpServletResponse.class.getName(), response);
-                        })
-                        .build();
-                OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+//               SavedRequest savedRequest = cache.getRequest(request, response);
+//
+//                OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
+//                        .principal(authentication)
+//                        .attributes(attrs -> {
+//                            attrs.put(HttpServletRequest.class.getName(), request);
+//                            attrs.put(HttpServletResponse.class.getName(), response);
+//                        })
+//                        .build();
+//                OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+//
+//                assert authorizedClient != null;
 
-                assert authorizedClient != null;
-                OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
 
-                RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-
-                if(accessToken != null) {
-                    System.out.println("AT: " + accessToken.getTokenValue());
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080?access_token=" + accessToken.getTokenValue());
+                try {
+                    RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080?" + request.getQueryString());
+                }catch (Exception e){
+                    System.out.println();
                 }
+
             }
         };
 
