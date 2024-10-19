@@ -16,10 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -77,7 +74,6 @@ public class SecurityConfig {
          return http.build();
     }
 
-
         AuthenticationSuccessHandler successHandler = new AuthenticationSuccessHandler() {
             final RequestCache cache = new  HttpSessionRequestCache();
 
@@ -85,7 +81,7 @@ public class SecurityConfig {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
                SavedRequest savedRequest = cache.getRequest(request, response);
-            System.out.println("savedRequest: " + savedRequest.toString());
+            System.out.println("savedRequest: " + request.getQueryString());
                if (savedRequest != null) {
                    String url = savedRequest.getRedirectUrl();
                    System.out.println("Redirecting to " + url);
