@@ -46,11 +46,14 @@ public class AppController {
 
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public void oauthLogin(HttpServletRequest request, HttpServletResponse response) {
+    public void oauthLogin() {
        User user=  appService.getJwtToken();
-
     }
 
+    @RequestMapping(value = "/login?", method = RequestMethod.GET)
+    void handleFoo(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/login");
+    }
 
     @RequestMapping(value = "/getAccessToken", method = RequestMethod.GET)
     public ResponseEntity<?> getAccessToken(@RequestParam String code) throws  IOException{
