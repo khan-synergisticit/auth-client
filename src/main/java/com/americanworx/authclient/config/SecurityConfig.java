@@ -88,7 +88,7 @@ public class SecurityConfig {
                     Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
                     cookie.setAttribute("token_type", accessToken.getTokenType().getValue());
                     cookie.setAttribute("expires_in", accessToken.getExpiresAt().toString());
-                    cookie.setDomain("192.168.1.99");
+                    cookie.setDomain("192.168.1.98");
                     cookie.setHttpOnly(true);
 
                     HttpSession httpSession = request.getSession(true);
