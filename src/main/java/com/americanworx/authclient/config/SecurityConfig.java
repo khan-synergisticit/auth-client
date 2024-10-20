@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -30,8 +31,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 @EnableWebSecurity
@@ -71,7 +71,6 @@ public class SecurityConfig {
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
                SavedRequest savedRequest = cache.getRequest(request, response);
-            System.out.println("param: " + savedRequest.getHeaderNames() + ", " + savedRequest.getParameterMap());
                 OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
@@ -82,8 +81,16 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-            System.out.println("token" + accessToken.toString());
-                Cookie cookie = new Cookie("token", accessToken.toString());
+                OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
+            Map<String, String> token = new HashMap<>();
+            token.put("access_token", accessToken.getTokenValue());
+            token.put("token_type", accessToken.getTokenType().getValue());
+            token.put("expires_in", Objects.requireNonNull(accessToken.getExpiresAt()).toString());
+            assert refreshToken != null;
+            token.put("refresh_token", refreshToken.getTokenValue());
+
+            System.out.println("token" + token.toString());
+                Cookie cookie = new Cookie("token", token.toString());
                 cookie.setHttpOnly(true);
                 response.addCookie(cookie);
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
