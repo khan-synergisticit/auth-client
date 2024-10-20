@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInit
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -70,7 +71,6 @@ public class SecurityConfig {
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-               SavedRequest savedRequest = cache.getRequest(request, response);
                 OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
@@ -86,8 +86,6 @@ public class SecurityConfig {
             token.put("access_token", accessToken.getTokenValue());
             token.put("token_type", accessToken.getTokenType().getValue());
             token.put("expires_in", Objects.requireNonNull(accessToken.getExpiresAt()).toString());
-            assert refreshToken != null;
-            token.put("refresh_token", refreshToken.getTokenValue());
 
             System.out.println("token" + token.toString());
                 Cookie cookie = new Cookie("token", token.toString());
