@@ -82,13 +82,9 @@ public class SecurityConfig {
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
                 OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
-            Map<String, String> token = new HashMap<>();
-            token.put("access_token", accessToken.getTokenValue());
-            token.put("token_type", accessToken.getTokenType().getValue());
-            token.put("expires_in", Objects.requireNonNull(accessToken.getExpiresAt()).toString());
-
-            System.out.println("token" + token.toString());
-                Cookie cookie = new Cookie("token", token.toString());
+                Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
+                cookie.setAttribute("token_type", accessToken.getTokenType().getValue());
+                cookie.setAttribute("expires_in", accessToken.getExpiresAt().toString());
                 cookie.setHttpOnly(true);
                 response.addCookie(cookie);
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
