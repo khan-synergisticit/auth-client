@@ -1,6 +1,7 @@
 package com.americanworx.authclient.config;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,10 +82,14 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+            System.out.println("token" + accessToken.toString());
+                Cookie cookie = new Cookie("token", accessToken.toString());
+                cookie.setHttpOnly(true);
+                response.addCookie(cookie);
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
 
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080?code=" + accessToken.getTokenValue());
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/index.html");
                 }
             }
         };
