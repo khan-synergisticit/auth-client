@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -81,15 +82,17 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-                OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
-                Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
-                cookie.setAttribute("token_type", accessToken.getTokenType().getValue());
-                cookie.setAttribute("expires_in", accessToken.getExpiresAt().toString());
-                cookie.setHttpOnly(true);
-                response.addCookie(cookie);
+
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
+                    Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
+                    cookie.setAttribute("token_type", accessToken.getTokenType().getValue());
+                    cookie.setAttribute("expires_in", accessToken.getExpiresAt().toString());
+                    cookie.setDomain(Constants.SHOP_URL);
+                    cookie.setHttpOnly(true);
 
+                    HttpSession httpSession = request.getSession(true);
+                    response.addCookie(cookie);
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/index.html");
                 }
             }
