@@ -58,7 +58,7 @@ public class SecurityConfig {
 
                 })
 
-                .oauth2Login(login -> login.successHandler(successHandler)).requestCache(cache -> cache.requestCache(new HttpSessionRequestCache()))
+                .oauth2Login(login -> login.successHandler(successHandler))
                  .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
                 .logout(logout -> logout.permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true));
          http
@@ -70,7 +70,6 @@ public class SecurityConfig {
     }
 
         AuthenticationSuccessHandler successHandler = new AuthenticationSuccessHandler() {
-            final RequestCache cache = new  HttpSessionRequestCache();
 
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
