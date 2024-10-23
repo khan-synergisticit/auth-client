@@ -94,7 +94,7 @@ public class SecurityConfig {
                     cookie.setDomain("192.168.1.69");
                     cookie.setHttpOnly(true);
                     response.addCookie(cookie);
-                    System.out.println("cookie: " + cookie.toString());
+                    System.out.println("cookie: " + cookie.getAttribute("access_token").toString());
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
                 }
             }
