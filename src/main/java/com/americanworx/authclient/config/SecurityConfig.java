@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.*;
@@ -54,7 +55,9 @@ public class SecurityConfig {
                     authorizationManagerRequestMatcherRegistry
                           .requestMatchers( "/save", "/getAccessToken").permitAll()
                             .anyRequest().authenticated();
-                })
+
+                }).logout(LogoutConfigurer::permitAll)
+
                 .oauth2Login(login -> login.successHandler(successHandler)).requestCache(cache -> cache.requestCache(new HttpSessionRequestCache()))
                  .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true));
