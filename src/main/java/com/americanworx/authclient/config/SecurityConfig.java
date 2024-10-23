@@ -93,10 +93,8 @@ public class SecurityConfig {
                     cookie.setAttribute("expires_in", accessToken.getExpiresAt().toString());
                     cookie.setDomain("192.168.1.69");
                     cookie.setHttpOnly(true);
-
-                    HttpSession httpSession = request.getSession(true);
                     response.addCookie(cookie);
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/index.html");
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
                 }
             }
         };
