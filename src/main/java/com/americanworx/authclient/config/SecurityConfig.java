@@ -89,8 +89,6 @@ public class SecurityConfig {
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
                     Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
-                    cookie.setAttribute("token_type", accessToken.getTokenType().getValue());
-                    cookie.setAttribute("expires_in", accessToken.getExpiresAt().toString());
                     cookie.setDomain("192.168.1.69");
                     cookie.setHttpOnly(true);
                     response.addCookie(cookie);
