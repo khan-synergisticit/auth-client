@@ -87,11 +87,12 @@ public class SecurityConfig {
 
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
-                    Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
-                    cookie.setDomain("192.168.1.69");
-                    //cookie.setHttpOnly(true);
-                    response.addCookie(cookie);
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
+//                    Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
+//                    cookie.setDomain("192.168.1.69");
+//                    //cookie.setHttpOnly(true);
+//                    response.addCookie(cookie);
+                    System.out.println("cookie: " + accessToken.getTokenValue());
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
                 }
             }
         };
