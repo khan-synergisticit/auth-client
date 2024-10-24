@@ -24,7 +24,7 @@ public class AppService {
     public User getJwtToken(){
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authentication: " + authentication.toString());
+//        System.out.println("Authentication: " + authentication.toString());
         var accessToken = getAccessToken(authentication);
         var refreshToken = getRefreshToken(authentication);
         if(accessToken == null || refreshToken == null){

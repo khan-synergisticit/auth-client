@@ -57,7 +57,7 @@ public class AppController {
     @RequestMapping(value = "/getAccessToken", method = RequestMethod.GET)
     public ResponseEntity<?> getAccessToken(@RequestParam String code) throws  IOException{
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authentication: " + authentication.toString());
+//        System.out.println("Authentication: " + authentication.toString());
         return oAuthClient.getAccessToken(code);
     }
 
