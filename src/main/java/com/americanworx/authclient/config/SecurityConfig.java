@@ -92,18 +92,20 @@ public class SecurityConfig {
                 Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
-                    ObjectMapper mapper = new ObjectMapper();
+
                     Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
                     cookie.setDomain("192.168.1.69");
                     cookie.setHttpOnly(false);
                     response.addCookie(cookie);
-                    System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + request.getHeaderNames().toString());
-                    obj.put("access_token", accessToken.getTokenValue());
-                    JsonNode node = mapper.convertValue(obj, JsonNode.class);
-                    userClient.sendUser(node, Constants.SHOP_URL + ":8080/user");
+                    System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + response.getHeader("referer"));
+
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
                     //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/user");
                 }
+            ObjectMapper mapper = new ObjectMapper();
+            obj.put("access_token", accessToken.getTokenValue());
+            JsonNode node = mapper.convertValue(obj, JsonNode.class);
+            userClient.sendUser(node, Constants.SHOP_URL + ":8080/user");
             }
         };
 
