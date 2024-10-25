@@ -11,6 +11,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Base64;
+import java.util.Map;
 
 @Component
 public class UserClient {
@@ -36,7 +37,7 @@ public class UserClient {
         }
     }
 
-    public void sendUser(JsonNode node, String url) throws JsonProcessingException {
+    public void sendUser(Map<String, Object> node, String url) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(node.toString(), headers);

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -97,7 +98,7 @@ public class SecurityConfig {
                     cookie.setDomain("192.168.1.69");
                     cookie.setHttpOnly(false);
                     response.addCookie(cookie);
-                    System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + request.getRequestURI());
+                    System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + request.getRequestURI() + " , 1: " + request.getHeader(HttpHeaders.REFERER));
 
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
                     //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/user");
@@ -105,7 +106,7 @@ public class SecurityConfig {
             ObjectMapper mapper = new ObjectMapper();
             obj.put("access_token", accessToken.getTokenValue());
             JsonNode node = mapper.convertValue(obj, JsonNode.class);
-            userClient.sendUser(node, Constants.SHOP_URL + ":8080/api/user");
+            userClient.sendUser(obj, Constants.SHOP_URL + ":8080/api/user");
             }
         };
 
