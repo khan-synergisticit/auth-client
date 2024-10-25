@@ -97,7 +97,7 @@ public class SecurityConfig {
                     cookie.setDomain("192.168.1.69");
                     cookie.setHttpOnly(false);
                     response.addCookie(cookie);
-                    System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + request.getHeaderNames());
+                    System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + request.getHeaderNames().toString());
                     obj.put("access_token", accessToken.getTokenValue());
                     JsonNode node = mapper.convertValue(obj, JsonNode.class);
                     userClient.sendUser(node, Constants.SHOP_URL + ":8080/user");
