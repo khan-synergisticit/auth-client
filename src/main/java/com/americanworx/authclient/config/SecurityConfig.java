@@ -92,7 +92,7 @@ public class SecurityConfig {
                     cookie.setHttpOnly(false);
                     response.addCookie(cookie);
                     System.out.println("cookie: " + accessToken.getTokenValue());
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
+                    //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/user");
                 }
             }
