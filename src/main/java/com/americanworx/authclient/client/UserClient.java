@@ -41,7 +41,8 @@ public class UserClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(node.toString(), headers);
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.put(url, request);
+        Object res = restTemplate.postForEntity(url, request, String.class);
+        System.out.println("response: " + res.toString());
     }
 
 }
