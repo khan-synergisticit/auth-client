@@ -36,5 +36,18 @@ public class UserClient {
         }
     }
 
+    public void sendUser(JsonNode node, String url) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        HttpEntity<String> request = new HttpEntity<>(node.toString(), headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<Object> response = restTemplate.exchange(url, HttpMethod.POST, request, Object.class);
+        Object body = response.getBody();
+        if(body != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node1 = mapper.convertValue(body, JsonNode.class);
+            System.out.println("Node: " + node1.toString());
+        }
+    }
 
 }

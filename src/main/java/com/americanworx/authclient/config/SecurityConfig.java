@@ -1,5 +1,8 @@
 package com.americanworx.authclient.config;
 
+import com.americanworx.authclient.client.UserClient;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +46,8 @@ public class SecurityConfig {
     private ClientRegistrationRepository clientRegistrationRepository;
     @Autowired
     private OAuth2AuthorizedClientManager authorizedClientManager;
+    @Autowired
+    private UserClient userClient;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuer;
@@ -84,16 +89,20 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-
+                Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
+                    ObjectMapper mapper = new ObjectMapper();
                     Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
                     cookie.setDomain("192.168.1.69");
                     cookie.setHttpOnly(false);
                     response.addCookie(cookie);
-                    System.out.println("cookie: " + accessToken.getTokenValue());
-                    //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/user");
+                    System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + request.getHeader("referrer"));
+                    obj.put("access_token", accessToken.getTokenValue());
+                    JsonNode node = mapper.convertValue(obj, JsonNode.class);
+                    userClient.sendUser(node, Constants.SHOP_URL + ":8080/user");
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
+                    //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/user");
                 }
             }
         };
