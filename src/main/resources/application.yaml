@@ -1,6 +1,8 @@
 server:
   port: 8090
-
+url:
+  auth-server: http://192.168.1.129
+  shop: http://192.168.1.111
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/users
