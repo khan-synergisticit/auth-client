@@ -38,7 +38,7 @@ public class UserClient {
 
     public void sendUser(JsonNode node, String url) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(node.toString(), headers);
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.put(url, request);
