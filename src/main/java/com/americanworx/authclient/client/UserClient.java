@@ -35,4 +35,6 @@ public class UserClient {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
+
+
 }
