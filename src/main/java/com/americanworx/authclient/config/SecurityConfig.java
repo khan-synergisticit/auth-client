@@ -101,7 +101,7 @@ public class SecurityConfig {
                     System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + request.getRequestURI() + " , 1: " + request.getHeader(HttpHeaders.REFERER));
 
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
-                    //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/user");
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/user");
                 }
             ObjectMapper mapper = new ObjectMapper();
             obj.put("access_token", accessToken.getTokenValue());
