@@ -1,6 +1,7 @@
 package com.americanworx.authclient.config;
 
 import com.americanworx.authclient.client.UserClient;
+import com.americanworx.authclient.domain.token.Token;
 import jakarta.servlet.ServletException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -83,10 +85,19 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+                OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
                 Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
-                    userClient.sendUser(accessToken.getTokenValue(), Constants.SHOP_URL + ":8080/api/user");
+                    if(refreshToken != null){
+                        Token token = new Token(accessToken.getTokenValue(), refreshToken.getTokenValue(), accessToken.getExpiresAt());
+
+                        System.out.println("refreshToken: " + refreshToken.getTokenValue());
+                        userClient.sendUser(token.toString(), Constants.SHOP_URL + ":8080/api/user");
+                    }else {
+                        userClient.sendUser(accessToken.getTokenValue(), Constants.SHOP_URL + ":8080/api/user");
+                    }
+
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
 
                 }
