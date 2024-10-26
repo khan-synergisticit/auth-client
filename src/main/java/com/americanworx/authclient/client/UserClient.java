@@ -41,8 +41,9 @@ public class UserClient {
     public void sendUser(User user, String url) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("user", user.toString());
         System.out.println("node: " + user.toString());
-        HttpEntity<User> request = new HttpEntity<>(user, headers);
+        HttpEntity<User> request = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
         Object res = restTemplate.postForEntity(url, request, String.class);
         System.out.println("response: " + res.toString());
