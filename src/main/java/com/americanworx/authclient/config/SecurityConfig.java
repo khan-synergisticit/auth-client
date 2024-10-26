@@ -1,20 +1,20 @@
 package com.americanworx.authclient.config;
 
 import com.americanworx.authclient.client.UserClient;
-import com.americanworx.authclient.domain.token.Token;
-import com.americanworx.authclient.domain.user.User;
-import com.americanworx.authclient.service.app.AppService;
-import com.americanworx.authclient.service.user.UserService;
 import jakarta.servlet.ServletException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.*;
@@ -22,7 +22,6 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -43,8 +42,7 @@ public class SecurityConfig {
     private OAuth2AuthorizedClientManager authorizedClientManager;
     @Autowired
     private UserClient userClient;
-    @Autowired private UserService userService;
-    @Autowired private AppService appService;
+
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuer;
 
@@ -85,30 +83,12 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-                OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
                 Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
+                    userClient.sendUser(accessToken.getTokenValue(), Constants.SHOP_URL + ":8080/api/user");
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
 
-                    String name = SecurityContextHolder.getContext().getAuthentication().getName();
-                    System.out.println("name: " + name);
-                    User user = userService.getUserByEmail(name);
-                    if(user != null) {
-                        Token token =  appService.getJwtToken();
-                        if(token == null){
-                            Token tok = new Token();
-                            tok.setExpiresAt(accessToken.getExpiresAt());
-                            tok.setAccessToken(accessToken.getTokenValue());
-                            assert refreshToken != null;
-                            tok.setRefreshToken(refreshToken.getTokenValue());
-                            user.setToken(tok);
-                        }else {
-                            user.setToken(token);
-                        }
-
-                        userClient.sendUser(user, Constants.SHOP_URL + ":8080/api/user");
-                    }
                 }
 
             }
@@ -148,4 +128,5 @@ public class SecurityConfig {
         };
 
     }
+
 }
