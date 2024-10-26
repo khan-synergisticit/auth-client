@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,6 +46,6 @@ public class User {
     private Date lockTime;
 
     @Transient
-    private Token token;
+    private List<Token> token;
 
 }

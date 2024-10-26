@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AppService {
 
@@ -22,21 +25,30 @@ public class AppService {
     private OAuth2AuthorizedClientService authorizedClientService;
     @PreAuthorize("hasAuthority('SCOPE_read')")
 
-    public Token getJwtToken(){
+    public List<Token> getJwtToken(){
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 //        System.out.println("Authentication: " + authentication.toString());
         var accessToken = getAccessToken(authentication);
         var refreshToken = getRefreshToken(authentication);
+        List<Token> tokens = new ArrayList<>();
         if(accessToken == null || refreshToken == null){
-            return null;
-        }else {
             Token token = new Token();
+            assert accessToken != null;
             token.setExpiresAt(accessToken.getExpiresAt());
-            token.setAccessToken(accessToken.getTokenValue());
-            token.setRefreshToken(refreshToken.getTokenValue());
-            return token;
+            token.setTokenValue(accessToken.getTokenValue());
+            token.setTokenType("access_token");
+            tokens.add(token);
         }
+        if(refreshToken != null){
+            Token token = new Token();
+            token.setExpiresAt(refreshToken.getExpiresAt());
+            token.setTokenValue(refreshToken.getTokenValue());
+            token.setTokenType("refresh_token");
+            tokens.add(token);
+        }
+
+        return tokens;
     }
 
     public OAuth2AccessToken getAccessToken (Authentication authentication) {
