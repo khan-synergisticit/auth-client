@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -84,7 +85,7 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-
+                OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
                 Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
@@ -95,7 +96,17 @@ public class SecurityConfig {
                     User user = userService.getUserByEmail(name);
                     if(user != null) {
                         Token token =  appService.getJwtToken();
-                        user.setToken(token);
+                        if(token == null){
+                            Token tok = new Token();
+                            tok.setExpiresAt(accessToken.getExpiresAt());
+                            tok.setAccessToken(accessToken.getTokenValue());
+                            assert refreshToken != null;
+                            tok.setRefreshToken(refreshToken.getTokenValue());
+                            user.setToken(tok);
+                        }else {
+                            user.setToken(token);
+                        }
+
                         userClient.sendUser(user, Constants.SHOP_URL + ":8080/api/user");
                     }
                 }
