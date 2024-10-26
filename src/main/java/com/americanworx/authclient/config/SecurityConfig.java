@@ -1,5 +1,6 @@
 package com.americanworx.authclient.config;
 
+import com.americanworx.authclient.client.OAuthClient;
 import com.americanworx.authclient.client.UserClient;
 import com.americanworx.authclient.domain.token.Token;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -45,6 +47,7 @@ public class SecurityConfig {
     @Autowired
     private UserClient userClient;
 
+    @Autowired private OAuthClient oAuthClient;
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuer;
 
@@ -75,7 +78,16 @@ public class SecurityConfig {
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
+            StringBuilder query = new  StringBuilder(request.getQueryString());
+            Token token1 = null;
+            String code = query.substring(5, query.length());
+            if(code != null) {
+               ResponseEntity<?> response1 = oAuthClient.getAccessToken(code);
+               Object object = response1.getBody();
+                assert object != null;
+                System.out.println("TOKEN: " + object.toString());
 
+            }
             System.out.println("Q: " + request.getQueryString());
                 OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
@@ -92,7 +104,6 @@ public class SecurityConfig {
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
                     if(refreshToken != null){
-                        Token token = new Token(accessToken.getTokenValue(), refreshToken.getTokenValue(), accessToken.getExpiresAt());
 
                         System.out.println("refreshToken: " + refreshToken.getTokenValue());
                         userClient.sendUser(token.toString(), Constants.SHOP_URL + ":8080/api/user");
