@@ -4,6 +4,7 @@ import com.americanworx.authclient.client.OAuthClient;
 
 import com.americanworx.authclient.client.UserClient;
 import com.americanworx.authclient.config.Constants;
+import com.americanworx.authclient.domain.token.Token;
 import com.americanworx.authclient.domain.user.User;
 import com.americanworx.authclient.service.app.AppService;
 import com.americanworx.authclient.service.user.UserService;
@@ -46,7 +47,7 @@ public class AppController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public void oauthLogin() {
-       User user=  appService.getJwtToken();
+       Token token =  appService.getJwtToken();
     }
 
     @RequestMapping(value = "/login?", method = RequestMethod.GET)

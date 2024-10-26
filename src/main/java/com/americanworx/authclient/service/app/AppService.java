@@ -1,5 +1,6 @@
 package com.americanworx.authclient.service.app;
 
+import com.americanworx.authclient.domain.token.Token;
 import com.americanworx.authclient.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class AppService {
     private OAuth2AuthorizedClientService authorizedClientService;
     @PreAuthorize("hasAuthority('SCOPE_read')")
 
-    public User getJwtToken(){
+    public Token getJwtToken(){
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 //        System.out.println("Authentication: " + authentication.toString());
@@ -30,11 +31,11 @@ public class AppService {
         if(accessToken == null || refreshToken == null){
             return null;
         }else {
-            User user = new User();
-            user.setEmail(authentication.getName());
-            user.setAccessToken(accessToken.getTokenValue());
-            user.setRefreshToken(refreshToken.getTokenValue());
-            return user;
+            Token token = new Token();
+            token.setExpiresAt(accessToken.getExpiresAt());
+            token.setAccessToken(accessToken.getTokenValue());
+            token.setRefreshToken(refreshToken.getTokenValue());
+            return token;
         }
     }
 
@@ -48,6 +49,7 @@ public class AppService {
         }
         return null;
     }
+
     public OAuth2RefreshToken getRefreshToken(Authentication authentication) {
         var authorizedClient = this.getAuthorizedClient(authentication);
         if (authorizedClient != null) {

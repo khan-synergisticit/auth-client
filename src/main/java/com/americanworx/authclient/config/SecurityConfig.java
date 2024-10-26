@@ -1,22 +1,20 @@
 package com.americanworx.authclient.config;
 
 import com.americanworx.authclient.client.UserClient;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.americanworx.authclient.domain.token.Token;
+import com.americanworx.authclient.domain.user.User;
+import com.americanworx.authclient.service.app.AppService;
+import com.americanworx.authclient.service.user.UserService;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.*;
@@ -24,16 +22,11 @@ import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationC
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -49,7 +42,8 @@ public class SecurityConfig {
     private OAuth2AuthorizedClientManager authorizedClientManager;
     @Autowired
     private UserClient userClient;
-
+    @Autowired private UserService userService;
+    @Autowired private AppService appService;
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuer;
 
@@ -90,22 +84,22 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+
                 Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
 
-                    Cookie cookie = new Cookie("access_token", accessToken.getTokenValue());
-                    cookie.setDomain("192.168.1.69");
-                    cookie.setHttpOnly(false);
-                    response.addCookie(cookie);
-                    System.out.println("cookie: " + accessToken.getTokenValue() + ", referrer: " + request.getRequestURI() + " , 1: " + request.getHeader(HttpHeaders.REFERER));
-
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
+                    String name = SecurityContextHolder.getContext().getAuthentication().getName();
+                    System.out.println("name: " + name);
+                    User user = userService.getUserByEmail(name);
+                    if(user != null) {
+                        Token token =  appService.getJwtToken();
+                        user.setToken(token);
+                        userClient.sendUser(user, Constants.SHOP_URL + ":8080/api/user");
+                    }
                 }
-            ObjectMapper mapper = new ObjectMapper();
-            obj.put("access_token", accessToken.getTokenValue());
-            JsonNode node = mapper.convertValue(obj, JsonNode.class);
-            userClient.sendUser(accessToken.getTokenValue(), Constants.SHOP_URL + ":8080/api/user");
+
             }
         };
 
@@ -143,41 +137,4 @@ public class SecurityConfig {
         };
 
     }
-
-//        @Bean
-//    public ClientRegistrationRepository clientRegistrationRepository() {
-//        return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
-//    }
-//    private ClientRegistration googleClientRegistration() {
-//        return ClientRegistration.withRegistrationId("shopping")
-//                .clientId("shopping")
-//                .clientSecret("donkey")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-//                .scope("openid", "profile", "read", "write")
-//                .authorizationUri("http://localhost:8040/oauth2/authorize")
-//               .tokenUri("http://localhost:8040/oauth2/v1/token")
-////                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-////                .userNameAttributeName(IdTokenClaimNames.SUB)
-////                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
-//                .clientName("Google")
-//                .build();
-//    }
-//    private ClientRegistration googleClientRegistration() {
-//        return ClientRegistration.withRegistrationId("google")
-//                .clientId("google-client-id")
-//                .clientSecret("google-client-secret")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-//                .scope("openid", "profile", "email", "address", "phone")
-//                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
-//                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
-//                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-//                .userNameAttributeName(IdTokenClaimNames.SUB)
-//                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
-//                .clientName("Google")
-//                .build();
-//    }
 }

@@ -1,6 +1,7 @@
 package com.americanworx.authclient.client;
 
 import com.americanworx.authclient.config.Constants;
+import com.americanworx.authclient.domain.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,12 +38,11 @@ public class UserClient {
         }
     }
 
-    public void sendUser(String code, String url) throws JsonProcessingException {
+    public void sendUser(User user, String url) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("code", code);
-        System.out.println("node: " + code);
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>( headers);
+        System.out.println("node: " + user.toString());
+        HttpEntity<String> request = new HttpEntity<>(user.toString(), headers);
         RestTemplate restTemplate = new RestTemplate();
         Object res = restTemplate.postForEntity(url, request, String.class);
         System.out.println("response: " + res.toString());

@@ -1,12 +1,11 @@
 package com.americanworx.authclient.domain.user;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.americanworx.authclient.domain.token.Token;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -45,8 +44,7 @@ public class User {
 
     private Date lockTime;
 
-    private String resetToken;
+    @Transient
+    private Token token;
 
-    private String accessToken;
-    private String refreshToken;
 }
