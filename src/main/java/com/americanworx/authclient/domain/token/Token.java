@@ -11,7 +11,7 @@ import java.time.Instant;
 @Setter
 @ToString
 public class Token {
-    private String accessToken;
-    private String refreshToken;
+    private String tokenValue;
+    private String tokenType;
     private Instant expiresAt;
 }

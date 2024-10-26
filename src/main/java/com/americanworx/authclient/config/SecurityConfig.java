@@ -97,9 +97,13 @@ public class SecurityConfig {
                 Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
-                    userClient.sendUser(accessToken.toString(), Constants.SHOP_URL + ":8080/api/user");
+                    Token token = new Token();
+                    token.setTokenValue(accessToken.getTokenValue());
+                    token.setTokenType("access_token");
+                    token.setExpiresAt(accessToken.getExpiresAt());
+                    userClient.sendUser(token.toString(), Constants.SHOP_URL + ":8080/api/user");
 
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
 
                 }
 
