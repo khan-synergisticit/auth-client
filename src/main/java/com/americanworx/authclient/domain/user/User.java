@@ -48,4 +48,7 @@ public class User {
     @Transient
     private List<Token> token;
 
+    @Transient
+    private String sessionId;
+
 }
