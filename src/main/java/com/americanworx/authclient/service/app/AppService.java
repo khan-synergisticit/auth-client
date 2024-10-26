@@ -32,9 +32,8 @@ public class AppService {
         var accessToken = getAccessToken(authentication);
         var refreshToken = getRefreshToken(authentication);
         List<Token> tokens = new ArrayList<>();
-        if(accessToken == null || refreshToken == null){
+        if(accessToken != null){
             Token token = new Token();
-            assert accessToken != null;
             token.setExpiresAt(accessToken.getExpiresAt());
             token.setTokenValue(accessToken.getTokenValue());
             token.setTokenType("access_token");

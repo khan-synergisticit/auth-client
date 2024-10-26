@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,8 +32,24 @@ public class UserController {
         System.out.println("name: " + name);
         User user = userService.getUserByEmail(name);
         if(user != null) {
-            List<Token> tokenList = appService.getJwtToken();
-            user.setToken(tokenList);
+            OAuth2AccessToken accessToken = appService.getAccessToken(authentication);
+            List<Token> tokens = new ArrayList<>();
+            if(accessToken != null){
+                Token token = new Token();
+                token.setExpiresAt(accessToken.getExpiresAt());
+                token.setTokenValue(accessToken.getTokenValue());
+                token.setTokenType("access_token");
+                tokens.add(token);
+            }
+            OAuth2RefreshToken refreshToken = appService.getRefreshToken(authentication);
+            if(refreshToken != null){
+                Token token = new Token();
+                token.setExpiresAt(refreshToken.getExpiresAt());
+                token.setTokenValue(refreshToken.getTokenValue());
+                token.setTokenType("refresh_token");
+                tokens.add(token);
+            }
+            user.setToken(tokens);
             return ResponseEntity.ok(user);
         }else {
             return new ResponseEntity<>(name, HttpStatus.NOT_FOUND);
