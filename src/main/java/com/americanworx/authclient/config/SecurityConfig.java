@@ -77,18 +77,6 @@ public class SecurityConfig {
 
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
-            StringBuilder query = new  StringBuilder(request.getQueryString());
-            Token token1 = null;
-            String code = query.substring(5, query.length());
-            if(code != null) {
-               ResponseEntity<?> response1 = oAuthClient.getAccessToken(code);
-               Object object = response1.getBody();
-                assert object != null;
-                System.out.println("TOKEN: " + object.toString());
-
-            }
-            System.out.println("Q: " + request.getQueryString());
                 OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
@@ -103,6 +91,7 @@ public class SecurityConfig {
                 Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
+                    System.out.println("expire: " + accessToken.getExpiresAt());
                     if(refreshToken != null){
 
                         System.out.println("refreshToken: " + refreshToken.getTokenValue());
