@@ -27,6 +27,7 @@ public class UserController {
         User user = userService.getUserByEmail(name);
         if(user != null) {
             Token token =  appService.getJwtToken();
+            System.out.println("Token: " + token.toString());
             user.setToken(token);
             return ResponseEntity.ok(user);
         }else {
