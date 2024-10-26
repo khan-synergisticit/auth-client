@@ -22,8 +22,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
+import org.springframework.security.oauth2.client.web.server.WebSessionOAuth2ServerAuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.jwt.*;
@@ -33,6 +37,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+
 
 import java.io.IOException;
 import java.util.*;
@@ -77,7 +82,8 @@ public class SecurityConfig {
 
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
+
+            OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
                             attrs.put(HttpServletRequest.class.getName(), request);
@@ -91,14 +97,7 @@ public class SecurityConfig {
                 Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
-                    System.out.println("expire: " + accessToken.getExpiresAt());
-                    if(refreshToken != null){
-
-                        System.out.println("refreshToken: " + refreshToken.getTokenValue());
-                       // userClient.sendUser(token.toString(), Constants.SHOP_URL + ":8080/api/user");
-                    }else {
-                        userClient.sendUser(accessToken.getTokenValue(), Constants.SHOP_URL + ":8080/api/user");
-                    }
+                    userClient.sendUser(accessToken.toString(), Constants.SHOP_URL + ":8080/api/user");
 
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?code=" + accessToken.getTokenValue());
 
@@ -121,7 +120,8 @@ public class SecurityConfig {
 
     @Bean
     DefaultAuthorizationCodeTokenResponseClient accessTokenResponseClient(){
-        return new DefaultAuthorizationCodeTokenResponseClient();
+        DefaultAuthorizationCodeTokenResponseClient responseClient = new DefaultAuthorizationCodeTokenResponseClient();
+        return responseClient;
     }
 
     private CorsConfigurationSource corsConfigurationSource() {

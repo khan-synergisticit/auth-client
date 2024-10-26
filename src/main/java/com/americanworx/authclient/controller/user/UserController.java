@@ -29,14 +29,18 @@ public class UserController {
         System.out.println("name: " + name);
         User user = userService.getUserByEmail(name);
         if(user != null) {
-            Token token =  new Token();
             OAuth2AccessToken accessToken = appService.getAccessToken(authentication);
-            OAuth2RefreshToken refreshToken = appService.getRefreshToken(authentication);
-            if(accessToken != null && refreshToken != null) {
-                token.setAccessToken(accessToken.toString());
-                token.setRefreshToken(appService.getRefreshToken(authentication).toString());
-                user.setToken(token);
+            if(accessToken != null) {
+                Token token =  new Token();
+                token.setAccessToken(accessToken.getTokenValue());
+                OAuth2RefreshToken refreshToken = appService.getRefreshToken(authentication);
+                if(refreshToken != null) {
+                    token.setAccessToken(accessToken.toString());
+                    token.setRefreshToken(appService.getRefreshToken(authentication).toString());
+                    user.setToken(token);
+                }
             }
+
             return ResponseEntity.ok(user);
         }else {
             return new ResponseEntity<>(name, HttpStatus.NOT_FOUND);
