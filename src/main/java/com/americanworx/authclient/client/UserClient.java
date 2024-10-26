@@ -49,7 +49,7 @@ public class UserClient {
         System.out.println("node: " + node.toString());
         HttpEntity<Map<String, Object>> request = new HttpEntity<>( headers);
         RestTemplate restTemplate = new RestTemplate();
-        Object res = restTemplate.postForEntity(url+"/user", request, String.class);
+        Object res = restTemplate.postForEntity(url, request, String.class);
         System.out.println("response: " + res.toString());
     }
 
