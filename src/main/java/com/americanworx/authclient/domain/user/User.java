@@ -46,9 +46,6 @@ public class User {
     private Date lockTime;
 
     @Transient
-    private List<Token> token;
-
-    @Transient
     private String sessionId;
 
 }
