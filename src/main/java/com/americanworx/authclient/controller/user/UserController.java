@@ -10,6 +10,7 @@ import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.token.TokenService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -30,9 +31,12 @@ public class UserController {
         if(user != null) {
             Token token =  new Token();
             OAuth2AccessToken accessToken = appService.getAccessToken(authentication);
-            token.setAccessToken(accessToken.toString());
-            token.setRefreshToken(appService.getRefreshToken(authentication).toString());
-            user.setToken(token);
+            OAuth2RefreshToken refreshToken = appService.getRefreshToken(authentication);
+            if(accessToken != null && refreshToken != null) {
+                token.setAccessToken(accessToken.toString());
+                token.setRefreshToken(appService.getRefreshToken(authentication).toString());
+                user.setToken(token);
+            }
             return ResponseEntity.ok(user);
         }else {
             return new ResponseEntity<>(name, HttpStatus.NOT_FOUND);
