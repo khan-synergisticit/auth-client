@@ -106,7 +106,7 @@ public class SecurityConfig {
                     if(refreshToken != null){
 
                         System.out.println("refreshToken: " + refreshToken.getTokenValue());
-                        userClient.sendUser(token.toString(), Constants.SHOP_URL + ":8080/api/user");
+                       // userClient.sendUser(token.toString(), Constants.SHOP_URL + ":8080/api/user");
                     }else {
                         userClient.sendUser(accessToken.getTokenValue(), Constants.SHOP_URL + ":8080/api/user");
                     }
