@@ -105,7 +105,7 @@ public class SecurityConfig {
             ObjectMapper mapper = new ObjectMapper();
             obj.put("access_token", accessToken.getTokenValue());
             JsonNode node = mapper.convertValue(obj, JsonNode.class);
-            userClient.sendUser(obj, Constants.SHOP_URL + ":8080/api/user");
+            userClient.sendUser(accessToken.getTokenValue(), Constants.SHOP_URL + ":8080/api/user");
             }
         };
 

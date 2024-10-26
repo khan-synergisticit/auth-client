@@ -37,11 +37,12 @@ public class UserClient {
         }
     }
 
-    public void sendUser(Map<String, Object> node, String url) throws JsonProcessingException {
+    public void sendUser(String code, String url) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        System.out.println("node: " + node.toString());
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(node, headers);
+        headers.add("code", code);
+        System.out.println("node: " + code);
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>( headers);
         RestTemplate restTemplate = new RestTemplate();
         Object res = restTemplate.postForEntity(url, request, String.class);
         System.out.println("response: " + res.toString());
