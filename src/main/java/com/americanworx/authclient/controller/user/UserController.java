@@ -1,16 +1,12 @@
 package com.americanworx.authclient.controller.user;
 
 import com.americanworx.authclient.config.Constants;
-import com.americanworx.authclient.domain.token.Token;
 import com.americanworx.authclient.domain.user.User;
 import com.americanworx.authclient.service.app.AppService;
 import com.americanworx.authclient.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.token.TokenService;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

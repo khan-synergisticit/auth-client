@@ -102,7 +102,7 @@ public class SecurityConfig {
                     token.setTokenType("access_token");
                     token.setExpiresAt(accessToken.getExpiresAt());
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?redirect=0");
 
                 }
 
