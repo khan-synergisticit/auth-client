@@ -35,6 +35,8 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -82,7 +84,11 @@ public class SecurityConfig {
 
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
+            SavedRequest savedReq = new HttpSessionRequestCache().getRequest(request, response);
+            System.out.println("12: " + savedReq.getParameterMap());
+            savedReq.getCookies().forEach(cookie -> System.out.println("13: " + cookie.getName() + ", " + cookie.getValue()));
+            System.out.println("14: " + savedReq.getHeaderNames());
+            System.out.println("15: " + savedReq.getRedirectUrl());
             OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
