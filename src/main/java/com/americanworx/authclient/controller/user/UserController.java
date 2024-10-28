@@ -4,6 +4,7 @@ import com.americanworx.authclient.config.Constants;
 import com.americanworx.authclient.domain.user.User;
 import com.americanworx.authclient.service.app.AppService;
 import com.americanworx.authclient.service.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ public class UserController {
     @RequestMapping(value = "/find", method = RequestMethod.GET)
     public ResponseEntity<?> getUserData() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Security details: " + authentication.getDetails().toString());
         String name = authentication.getName();
         System.out.println("name: " + name);
         User user = userService.getUserByEmail(name);
