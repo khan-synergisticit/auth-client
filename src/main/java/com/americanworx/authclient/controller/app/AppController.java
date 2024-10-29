@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,10 +46,15 @@ public class AppController {
     }
 
 
-//    @RequestMapping(value = "/login", method = RequestMethod.GET)
-//    public void oauthLogin() {
-//       Token token =  appService.getJwtToken();
-//    }
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public void oauthLogin(HttpServletResponse response) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.isAuthenticated()){
+            response.sendRedirect(Constants.SHOP_URL + ":8080/?redirect=0");
+        } else {
+            response.sendRedirect("/login");
+        }
+    }
 //
 //    @RequestMapping(value = "/login?", method = RequestMethod.GET)
 //    void handleFoo(HttpServletResponse response) throws IOException {
