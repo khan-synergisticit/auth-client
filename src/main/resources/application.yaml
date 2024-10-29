@@ -35,8 +35,8 @@ spring:
 
             # Our authorization grant type is authorization_code
             authorization-grant-type:
-#              - authorization_code
-#              - refresh_token
+              - authorization_code
+              - refresh_token
               - client_credentials
             # The following redirect URL is the redirect URL definition of our client Server application.
             # It is generally the current application host address. The authorization server's redirect URL
