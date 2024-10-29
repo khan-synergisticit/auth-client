@@ -84,6 +84,18 @@ public class SecurityConfig {
 
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+            System.out.println("1: " + authentication.toString());
+            System.out.println("2: " + authentication.getPrincipal());
+            System.out.println("3: " + authentication.getCredentials());
+            System.out.println("4: " + authentication.getAuthorities());
+            System.out.println("5: " + authentication.getDetails());
+
+            System.out.println("6: " + request.getRequestURI());
+            System.out.println("7: " + request.getContextPath());
+            System.out.println("8: " + request.getServletPath());
+            System.out.println("9.1: " + request.getSession());
+            System.out.println("10: " + response.getStatus());
+            System.out.println("11: " + response.getHeaderNames());
             SavedRequest savedReq = new HttpSessionRequestCache().getRequest(request, response);
             System.out.println("12: " + savedReq.getParameterMap());
             savedReq.getCookies().forEach(cookie -> System.out.println("13: " + cookie.getName() + ", " + cookie.getValue()));
