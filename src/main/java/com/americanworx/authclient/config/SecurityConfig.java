@@ -94,6 +94,7 @@ public class SecurityConfig {
             System.out.println("7: " + request.getContextPath());
             System.out.println("8: " + request.getServletPath());
             System.out.println("9.1: " + request.getSession());
+            System.out.println("9.2: " + request.getQueryString());
             System.out.println("10: " + response.getStatus());
             System.out.println("11: " + response.getHeaderNames());
             SavedRequest savedReq = new HttpSessionRequestCache().getRequest(request, response);
@@ -101,6 +102,7 @@ public class SecurityConfig {
             savedReq.getCookies().forEach(cookie -> System.out.println("13: " + cookie.getName() + ", " + cookie.getValue()));
             System.out.println("14: " + savedReq.getHeaderNames());
             System.out.println("15: " + savedReq.getRedirectUrl());
+
             OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
