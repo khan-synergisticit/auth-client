@@ -27,9 +27,9 @@ public class OAuthClient {
         headers.add("Content-Type", "application/x-www-form-urlencoded");
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("grant_type", "authorization_code");
+        map.add("grant_type", "client_credentials");
         map.add("code",code);
-        map.add("redirect_uri", Constants.AUTH_CLIENT_URL + ":8090/login/oauth2/code/shopping");
+        map.add("redirect_uri", Constants.SHOP_URL + ":8080/index.html");
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
         ResponseEntity<Object> response = restTemplate.exchange(Constants.AUTH_SERVER_URL+":8040/oauth2/token", HttpMethod.POST, request, Object.class);
