@@ -151,7 +151,7 @@ public class SecurityConfig {
                     Cookie cookie = new Cookie("session", details.getSessionId());
                     cookie.setDomain(Constants.SHOP_URL_BASE);
                     cookie.setPath("/");
-                    cookie.setHttpOnly(true);
+                    cookie.setHttpOnly(false);
                     response.addCookie(cookie);
                     System.out.println("cookie: " + cookie.getValue());
 
