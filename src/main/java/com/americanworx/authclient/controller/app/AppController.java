@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,8 @@ public class AppController {
     public void oauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
+
         if(authentication != null && authentication.isAuthenticated()){
             redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?redirect=0");
         } else {
