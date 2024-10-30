@@ -53,11 +53,8 @@ public class AppController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public void oauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-
-
         if(authentication != null && authentication.isAuthenticated()){
-            redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?redirect=0");
+            response.sendRedirect( Constants.SHOP_URL + ":8080/?redirect=0");
         } else {
             response.sendRedirect("/login");
         }

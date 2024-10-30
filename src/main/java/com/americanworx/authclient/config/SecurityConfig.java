@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -65,28 +66,29 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-//        http.sessionManagement( sess -> sess.sessionCreationPolicy(
-//            SessionCreationPolicy.ALWAYS
-//        ))
-//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
-//                    authorizationManagerRequestMatcherRegistry
-//                            .requestMatchers( "/save", "/getAccessToken").permitAll()
-//                            .anyRequest().authenticated();
-//
-//                });
-
-         http
+        http.sessionManagement( sess -> sess.sessionCreationPolicy(
+            SessionCreationPolicy.ALWAYS
+        ))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+                            .requestMatchers( "/save", "/getAccessToken").permitAll()
                             .anyRequest().authenticated();
 
                 })
 
+//         http
+//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
+//                    authorizationManagerRequestMatcherRegistry
+//                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+//                            .anyRequest().authenticated();
+//
+//                })
+
                 .oauth2Login(login -> login.successHandler(successHandler))
                  .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
-                .logout(logout -> logout.permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true));
-         http
+                .logout(logout -> logout.permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true))
+                .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
+//         http
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                  .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt->jwt.decoder(jwtDecoder())));
