@@ -105,7 +105,8 @@ public class SecurityConfig {
             System.out.println("6: " + request.getRequestURI());
             System.out.println("7: " + request.getContextPath());
             System.out.println("8: " + request.getServletPath());
-            System.out.println("9.1: " + request.getSession());
+            System.out.println("9.0: " + request.getSession().getId());
+            System.out.println("9.1: " + request.getSession().getAttributeNames());
             System.out.println("9.2: " + request.getQueryString());
 //            StringBuilder query = new StringBuilder(request.getQueryString());
 //            String queryString = query.substring(query.indexOf("=") + 1);

@@ -13,12 +13,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -47,10 +50,11 @@ public class AppController {
 
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public void oauthLogin(HttpServletResponse response) throws IOException {
+    public void oauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
         if(authentication != null && authentication.isAuthenticated()){
-            response.sendRedirect(Constants.SHOP_URL + ":8080/?redirect=0");
+            redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?redirect=0");
         } else {
             response.sendRedirect("/login");
         }
