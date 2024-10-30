@@ -154,7 +154,7 @@ public class SecurityConfig {
                     cookie.setHttpOnly(true);
                     response.addCookie(cookie);
                     System.out.println("cookie: " + cookie.getValue());
-
+                    response.sendRedirect(Constants.SHOP_URL + ":8080");
 //                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
 
                 }
