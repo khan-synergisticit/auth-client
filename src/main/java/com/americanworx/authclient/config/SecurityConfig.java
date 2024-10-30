@@ -151,11 +151,11 @@ public class SecurityConfig {
                     Cookie cookie = new Cookie("session", details.getSessionId());
                     cookie.setDomain(Constants.SHOP_URL_BASE);
                     cookie.setPath("/");
-                    cookie.setHttpOnly(false);
+                    cookie.setHttpOnly(true);
                     response.addCookie(cookie);
                     System.out.println("cookie: " + cookie.getValue());
-                    response.sendRedirect(Constants.SHOP_URL + ":8080/?redirect=0");
-//                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?redirect=0");
+
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?home=");
 
                 }
 
