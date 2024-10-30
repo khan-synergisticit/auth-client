@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -38,6 +39,7 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.web.cors.CorsConfiguration;
@@ -102,6 +104,7 @@ public class SecurityConfig {
             System.out.println("4: " + authentication.getAuthorities());
             System.out.println("5: " + authentication.getDetails());
 
+
             System.out.println("6: " + request.getRequestURI());
             System.out.println("7: " + request.getContextPath());
             System.out.println("8: " + request.getServletPath());
@@ -136,8 +139,6 @@ public class SecurityConfig {
                 OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
                 assert authorizedClient != null;
                 OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-                OAuth2RefreshToken refreshToken = authorizedClient.getRefreshToken();
-                Map<String, Object> obj = new HashMap<>();
                 RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
                 if(accessToken != null) {
                     Token token = new Token();
@@ -145,6 +146,15 @@ public class SecurityConfig {
                     token.setTokenType("access_token");
                     token.setExpiresAt(accessToken.getExpiresAt());
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
+
+                    WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
+                    Cookie cookie = new Cookie("session", details.getSessionId());
+                    cookie.setDomain(Constants.SHOP_URL_BASE);
+                    cookie.setPath("/");
+                    cookie.setHttpOnly(true);
+                    response.addCookie(cookie);
+
+
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?redirect=0");
 
                 }
