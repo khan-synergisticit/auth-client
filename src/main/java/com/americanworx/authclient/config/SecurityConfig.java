@@ -64,7 +64,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
         http.sessionManagement( sess -> sess.sessionCreationPolicy(
-            SessionCreationPolicy.STATELESS
+            SessionCreationPolicy.ALWAYS
         ))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
