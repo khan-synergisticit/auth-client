@@ -45,10 +45,12 @@ public class UserClient {
         JsonNode node = mapper.convertValue(token, JsonNode.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.add("code", node.toString());
         System.out.println("node: " + node.toString());
         HttpEntity<Map<String, Object>> request = new HttpEntity<>( headers);
         RestTemplate restTemplate = new RestTemplate();
+
         Object res = restTemplate.postForEntity(url, request, String.class);
         System.out.println("response: " + res.toString());
     }
