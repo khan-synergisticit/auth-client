@@ -86,7 +86,7 @@ public class SecurityConfig {
 
                 .oauth2Login(login -> login.successHandler(successHandler))
                  .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
-                .logout(logout -> logout.permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true))
+                .logout(logout -> logout.permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true).permitAll())
                 .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
 //         http
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
