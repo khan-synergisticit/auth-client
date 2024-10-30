@@ -65,23 +65,23 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-        http.sessionManagement( sess -> sess.sessionCreationPolicy(
-            SessionCreationPolicy.ALWAYS
-        ))
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
-                    authorizationManagerRequestMatcherRegistry
-                            .requestMatchers( "/save", "/getAccessToken").permitAll()
-                            .anyRequest().authenticated();
-
-                });
-
-         http
+//        http.sessionManagement( sess -> sess.sessionCreationPolicy(
+//            SessionCreationPolicy.ALWAYS
+//        ))
 //                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
 //                    authorizationManagerRequestMatcherRegistry
-//                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+//                            .requestMatchers( "/save", "/getAccessToken").permitAll()
 //                            .anyRequest().authenticated();
 //
-//                })
+//                });
+
+         http
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
+                    authorizationManagerRequestMatcherRegistry
+                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+                            .anyRequest().authenticated();
+
+                })
 
                 .oauth2Login(login -> login.successHandler(successHandler))
                  .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
@@ -154,8 +154,8 @@ public class SecurityConfig {
                     cookie.setHttpOnly(false);
                     response.addCookie(cookie);
                     System.out.println("cookie: " + cookie.getValue());
-
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?redirect=0");
+                    response.sendRedirect(Constants.SHOP_URL + ":8080/?redirect=0");
+//                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/?redirect=0");
 
                 }
 
