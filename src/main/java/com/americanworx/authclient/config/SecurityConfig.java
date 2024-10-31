@@ -64,6 +64,8 @@ public class SecurityConfig {
         http.sessionManagement( sess -> sess.sessionCreationPolicy(
             SessionCreationPolicy.ALWAYS
         ))
+                .cors(cors->cors.configurationSource(corsConfigurationSource()))
+                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
                             .requestMatchers( "/save", "/getAccessToken").permitAll()
@@ -81,7 +83,7 @@ public class SecurityConfig {
 //
 //                })
                 .oauth2Login(login -> login.successHandler(successHandler))
-                 .logout(logout -> logout.permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()))
+                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()))
                  .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 //.oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
