@@ -72,6 +72,8 @@ public class SecurityConfig {
 //                })
 
          http
+                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
+                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
                           .requestMatchers( "/save", "/getAccessToken").permitAll()
@@ -83,8 +85,7 @@ public class SecurityConfig {
                  .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 //.oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
-                .cors(cors->cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
+
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt->jwt.decoder(jwtDecoder())));
 
          return http.build();
