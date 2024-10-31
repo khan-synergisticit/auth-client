@@ -170,6 +170,7 @@ public class SecurityConfig {
         OidcClientInitiatedLogoutSuccessHandler successHandler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
         SecurityContextHolder.getContext().setAuthentication(null);
         successHandler.setPostLogoutRedirectUri("{baseUrl}");
+        System.out.println("Logout success");
         return successHandler;
     }
 
