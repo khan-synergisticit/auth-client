@@ -3,9 +3,8 @@ package com.americanworx.authclient.config;
 import com.americanworx.authclient.client.OAuthClient;
 import com.americanworx.authclient.client.UserClient;
 import com.americanworx.authclient.domain.token.Token;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
+
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,27 +26,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
-import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.WebSessionOAuth2ServerAuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 @Configuration
@@ -150,10 +145,12 @@ public class SecurityConfig {
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
 
                     WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
-                    Cookie cookie = new Cookie("session", details.getSessionId());
+                    Cookie cookie = new Cookie("token", token.toString());
                     cookie.setDomain(Constants.SHOP_URL_BASE);
                     cookie.setPath("/");
                     cookie.setHttpOnly(true);
+                    Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
+                    cookie.setMaxAge(duration.toSecondsPart());
                     response.addCookie(cookie);
                     System.out.println("cookie: " + cookie.getValue());
                     response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn");
