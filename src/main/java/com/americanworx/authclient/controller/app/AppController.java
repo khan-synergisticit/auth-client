@@ -47,11 +47,6 @@ public class AppController {
     @Autowired
     private OAuthClient oAuthClient;
 
-    @GetMapping
-    public ResponseEntity<String> getPublicData() {
-        return ResponseEntity.ok("Public Data");
-    }
-
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public void oauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
