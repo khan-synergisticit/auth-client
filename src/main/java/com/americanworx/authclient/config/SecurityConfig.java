@@ -120,7 +120,6 @@ public class SecurityConfig {
                     cookie.setHttpOnly(true);
                     Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
                     cookie.setMaxAge(duration.toSecondsPart());
-                    cookie.setSecure(true);
                     response.addCookie(cookie);
                     System.out.println("cookie: " + cookie.getValue());
                     //response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn");
