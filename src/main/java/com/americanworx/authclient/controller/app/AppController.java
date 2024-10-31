@@ -54,6 +54,7 @@ public class AppController {
     public void oauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.isAuthenticated()){
+            System.out.println("LOGGED IN");
             response.sendRedirect( Constants.SHOP_URL + ":8080/?redirect=0");
         } else {
             response.sendRedirect("/login");
