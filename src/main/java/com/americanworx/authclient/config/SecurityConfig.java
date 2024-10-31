@@ -70,7 +70,7 @@ public class SecurityConfig {
                             .anyRequest().authenticated();
 
                 })
-
+                .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true).permitAll())
 //         http
 //                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
 //                    authorizationManagerRequestMatcherRegistry
@@ -80,13 +80,11 @@ public class SecurityConfig {
 //                })
 
                 .oauth2Login(login -> login.successHandler(successHandler))
-                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
-                .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true).permitAll())
                 .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
-//         http
+                .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt->jwt.decoder(jwtDecoder())));
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt->jwt.decoder(jwtDecoder())));
 
          return http.build();
     }
