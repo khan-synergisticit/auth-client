@@ -70,7 +70,7 @@ public class SecurityConfig {
                             .anyRequest().authenticated();
 
                 })
-                .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true).permitAll())
+                .logout(logout -> logout.permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true).permitAll())
 //         http
 //                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
 //                    authorizationManagerRequestMatcherRegistry
@@ -81,6 +81,7 @@ public class SecurityConfig {
 
                 .oauth2Login(login -> login.successHandler(successHandler))
                 .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
+                //.oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -134,6 +135,8 @@ public class SecurityConfig {
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withIssuerLocation(issuer).build();
     }
+
+
     OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler() {
         OidcClientInitiatedLogoutSuccessHandler successHandler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
         SecurityContextHolder.getContext().setAuthentication(null);
