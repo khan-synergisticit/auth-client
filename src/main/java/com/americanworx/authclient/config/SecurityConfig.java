@@ -145,7 +145,7 @@ public class SecurityConfig {
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
 
                     WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
-                    Cookie cookie = new Cookie("token", token.toString());
+                    Cookie cookie = new Cookie("token", token.getTokenValue());
                     cookie.setDomain(Constants.SHOP_URL_BASE);
                     cookie.setPath("/");
                     cookie.setHttpOnly(true);
