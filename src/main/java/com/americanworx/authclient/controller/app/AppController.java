@@ -62,7 +62,7 @@ public class AppController {
             cookie.setMaxAge(duration.toSecondsPart());
 
             response.addCookie(cookie);
-            response.sendRedirect( Constants.SHOP_URL + ":8080");
+            response.sendRedirect( Constants.SHOP_URL + ":8080/loggedIn");
         } else {
             response.sendRedirect(Constants.SHOP_URL + ":8080");
         }
