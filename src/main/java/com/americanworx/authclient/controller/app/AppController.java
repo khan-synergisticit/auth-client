@@ -21,11 +21,14 @@ import org.springframework.http.*;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,16 +53,25 @@ public class AppController {
     }
 
 
-//    @RequestMapping(value = "/login", method = RequestMethod.GET)
-//    public void oauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(authentication != null && authentication.isAuthenticated()){
-//            System.out.println("LOGGED IN");
-//            response.sendRedirect( Constants.SHOP_URL + ":8080/?redirect=0");
-//        } else {
-//            response.sendRedirect("/login");
-//        }
-//    }
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public void oauthLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.isAuthenticated()){
+            System.out.println("LOGGED IN");
+            OAuth2AccessToken accessToken = (OAuth2AccessToken) authentication.getPrincipal();
+            Cookie cookie = new Cookie("token", accessToken.getTokenValue());
+            cookie.setDomain(Constants.SHOP_URL_BASE);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
+            cookie.setMaxAge(duration.toSecondsPart());
+            cookie.setSecure(true);
+            response.addCookie(cookie);
+            response.sendRedirect( Constants.SHOP_URL + ":8080/?redirect=0");
+        } else {
+            response.sendRedirect("/login");
+        }
+    }
 //
 //    @RequestMapping(value = "/login?", method = RequestMethod.GET)
 //    void handleFoo(HttpServletResponse response) throws IOException {

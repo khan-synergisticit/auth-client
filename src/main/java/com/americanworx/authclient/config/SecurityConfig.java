@@ -61,27 +61,27 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-        http.sessionManagement( sess -> sess.sessionCreationPolicy(
-            SessionCreationPolicy.ALWAYS
-        ))
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
-                    authorizationManagerRequestMatcherRegistry
-                            .requestMatchers( "/save", "/getAccessToken").permitAll()
-                            .anyRequest().authenticated();
-
-                })
-
-//         http
+//        http.sessionManagement( sess -> sess.sessionCreationPolicy(
+//            SessionCreationPolicy.ALWAYS
+//        ))
 //                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
 //                    authorizationManagerRequestMatcherRegistry
-//                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+//                            .requestMatchers( "/save", "/getAccessToken").permitAll()
 //                            .anyRequest().authenticated();
 //
 //                })
 
+         http
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
+                    authorizationManagerRequestMatcherRegistry
+                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+                            .anyRequest().authenticated();
+
+                })
+
                 .oauth2Login(login -> login.successHandler(successHandler))
                  .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
-                .logout(logout -> logout.permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true).permitAll())
+                .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).clearAuthentication(true).deleteCookies().invalidateHttpSession(true).permitAll())
                 .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
 //         http
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
@@ -114,7 +114,6 @@ public class SecurityConfig {
                     token.setExpiresAt(accessToken.getExpiresAt());
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
 
-                    WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
                     Cookie cookie = new Cookie("token", token.getTokenValue());
                     cookie.setDomain(Constants.SHOP_URL_BASE);
                     cookie.setPath("/");
