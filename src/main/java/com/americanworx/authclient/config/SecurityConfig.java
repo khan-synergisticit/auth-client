@@ -140,9 +140,7 @@ public class SecurityConfig {
 
     OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler() {
         OidcClientInitiatedLogoutSuccessHandler successHandler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
-        SecurityContextHolder.getContext().setAuthentication(null);
-
-        successHandler.setPostLogoutRedirectUri(Constants.SHOP_URL + ":8080/loggedOut");
+        successHandler.setPostLogoutRedirectUri("{baseUrl}");
         System.out.println("Logout success");
         return successHandler;
     }
