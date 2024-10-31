@@ -62,9 +62,9 @@ public class AppController {
             cookie.setMaxAge(duration.toSecondsPart());
             cookie.setSecure(true);
             response.addCookie(cookie);
-            response.sendRedirect( Constants.SHOP_URL + ":8080/?redirect=0");
+            response.sendRedirect( Constants.SHOP_URL + ":8080/loggedIn");
         } else {
-            response.sendRedirect("/login");
+            response.sendRedirect(Constants.SHOP_URL + ":8080");
         }
     }
 //
