@@ -61,25 +61,25 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-//        http.sessionManagement( sess -> sess.sessionCreationPolicy(
-//            SessionCreationPolicy.ALWAYS
-//        ))
-//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
-//                    authorizationManagerRequestMatcherRegistry
-//                            .requestMatchers( "/save", "/getAccessToken").permitAll()
-//                            .anyRequest().authenticated();
-//
-//                })
-
-         http
-                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
-                 .csrf(AbstractHttpConfigurer::disable)
+        http.sessionManagement( sess -> sess.sessionCreationPolicy(
+            SessionCreationPolicy.ALWAYS
+        ))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+                            .requestMatchers( "/save", "/getAccessToken").permitAll()
                             .anyRequest().authenticated();
 
                 })
+
+//         http
+//                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
+//                 .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
+//                    authorizationManagerRequestMatcherRegistry
+//                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+//                            .anyRequest().authenticated();
+//
+//                })
                 .oauth2Login(login -> login.successHandler(successHandler))
                  .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()))
                  .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
