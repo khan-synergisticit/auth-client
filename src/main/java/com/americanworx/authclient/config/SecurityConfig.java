@@ -61,23 +61,23 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-//        http.sessionManagement( sess -> sess.sessionCreationPolicy(
-//            SessionCreationPolicy.ALWAYS
-//        ))
-//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
-//                    authorizationManagerRequestMatcherRegistry
-//                            .requestMatchers( "/save", "/getAccessToken").permitAll()
-//                            .anyRequest().authenticated();
-//
-//                })
-
-         http
+        http.sessionManagement( sess -> sess.sessionCreationPolicy(
+            SessionCreationPolicy.ALWAYS
+        ))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+                            .requestMatchers( "/save", "/getAccessToken").permitAll()
                             .anyRequest().authenticated();
 
                 })
+
+//         http
+//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
+//                    authorizationManagerRequestMatcherRegistry
+//                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+//                            .anyRequest().authenticated();
+//
+//                })
 
                 .oauth2Login(login -> login.successHandler(successHandler))
                  .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
