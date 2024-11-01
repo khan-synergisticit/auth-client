@@ -36,6 +36,7 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -83,7 +84,7 @@ public class SecurityConfig {
 //
 //                })
                 .oauth2Login(login -> login.successHandler(successHandler))
-                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()).permitAll())
+                 .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(oidcLogoutSuccessHandler()).permitAll())
                  .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 //.oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
@@ -115,6 +116,7 @@ public class SecurityConfig {
                     token.setTokenType("access_token");
                     token.setExpiresAt(accessToken.getExpiresAt());
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
+
                     Cookie cookie = new Cookie("token", token.getTokenValue());
                     cookie.setDomain(Constants.SHOP_URL_BASE);
                     cookie.setPath("/");
