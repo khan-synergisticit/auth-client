@@ -115,7 +115,6 @@ public class SecurityConfig {
                     token.setTokenType("access_token");
                     token.setExpiresAt(accessToken.getExpiresAt());
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
-                    userClient.sendUser(token, Constants.SHOP_URL + ":8080/loggedIn");
 //                    Cookie cookie = new Cookie("token", token.getTokenValue());
 //                    cookie.setDomain(Constants.SHOP_URL_BASE);
 //                    cookie.setPath("/");
