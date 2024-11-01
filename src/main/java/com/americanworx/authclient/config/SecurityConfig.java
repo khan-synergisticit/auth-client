@@ -126,7 +126,7 @@ public class SecurityConfig {
                     response.setContentType("application/x-www-form-urlencoded");
                     response.addHeader("Cookie", token.getTokenValue());
 
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn?code=" + accessToken.getTokenValue());
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
 
                 }
 
