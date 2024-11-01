@@ -114,7 +114,7 @@ public class SecurityConfig {
                     token.setTokenValue(accessToken.getTokenValue());
                     token.setTokenType("access_token");
                     token.setExpiresAt(accessToken.getExpiresAt());
-                    userClient.sendUser(token, Constants.SHOP_URL + ":8080/loggedIn");
+                    userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
 
 //                    Cookie cookie = new Cookie("token", token.getTokenValue());
 //                    cookie.setDomain(Constants.SHOP_URL_BASE);
@@ -124,8 +124,9 @@ public class SecurityConfig {
 //                    cookie.setMaxAge(duration.toSecondsPart());
 //                    response.addCookie(cookie);
 //                    System.out.println("cookie: " + cookie.getValue());
-//                    //response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn");
-//                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn");
+                    //response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn");
+                    request.setAttribute("access_token", token.toString());
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn");
 
                 }
 
