@@ -115,16 +115,16 @@ public class SecurityConfig {
                     token.setTokenType("access_token");
                     token.setExpiresAt(accessToken.getExpiresAt());
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
-//                    Cookie cookie = new Cookie("token", token.getTokenValue());
-//                    cookie.setDomain(Constants.SHOP_URL_BASE);
-//                    cookie.setPath("/");
-//                    cookie.setHttpOnly(true);
-//                    Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
-//                    cookie.setMaxAge(duration.toSecondsPart());
-//                    response.addCookie(cookie);
-//                    System.out.println("cookie: " + cookie.getValue());
+                    Cookie cookie = new Cookie("token", token.getTokenValue());
+                    cookie.setDomain(Constants.SHOP_URL_BASE);
+                    cookie.setPath("/");
+                    cookie.setHttpOnly(false);
+                    Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
+                    cookie.setMaxAge(duration.toSecondsPart());
+                    response.addCookie(cookie);
+                    System.out.println("cookie: " + cookie.getValue());
                     response.setContentType("application/json; charset=utf-8");
-                    response.addHeader("Cookie", token.getTokenValue());
+
 
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn");
 
