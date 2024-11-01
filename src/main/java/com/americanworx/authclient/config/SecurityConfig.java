@@ -123,7 +123,7 @@ public class SecurityConfig {
 //                    cookie.setMaxAge(duration.toSecondsPart());
 //                    response.addCookie(cookie);
 //                    System.out.println("cookie: " + cookie.getValue());
-                    response.setContentType("application/x-www-form-urlencoded");
+                    response.setContentType("application/json");
                     response.addHeader("Cookie", token.getTokenValue());
 
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn");
