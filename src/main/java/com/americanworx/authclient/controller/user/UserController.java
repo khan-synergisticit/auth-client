@@ -31,6 +31,7 @@ public class UserController {
         System.out.println("name: " + name);
         User user = userService.getUserByEmail(name);
         request.setAttribute("user", user);
+        response.setStatus(HttpServletResponse.SC_OK);
 //        if(user != null) {
 //            System.out.println("User: " + user.toString());
 //            return new ResponseEntity<>(user, HttpStatus.OK);
