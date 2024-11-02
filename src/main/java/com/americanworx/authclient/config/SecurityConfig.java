@@ -99,7 +99,9 @@ public class SecurityConfig {
 
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
+            System.out.println("1: " + authentication.getPrincipal());
+            System.out.println("2: " + authentication.getCredentials());
+            System.out.println("3: " + authentication.getAuthorities());
             OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
