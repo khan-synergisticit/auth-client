@@ -24,19 +24,18 @@ public class UserController {
     @Autowired private AppService appService;
 
     @RequestMapping(value = "/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void getUserData(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> getUserData(HttpServletRequest request, HttpServletResponse response) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Security details: " + authentication.getDetails().toString());
         String name = authentication.getName();
         System.out.println("name: " + name);
         User user = userService.getUserByEmail(name);
-        request.setAttribute("user", user);
         response.setStatus(HttpServletResponse.SC_OK);
-//        if(user != null) {
-//            System.out.println("User: " + user.toString());
-//            return new ResponseEntity<>(user, HttpStatus.OK);
-//        }else {
-//            return new ResponseEntity<>(name, HttpStatus.NOT_FOUND);
-//        }
+        if(user != null) {
+            System.out.println("User: " + user.toString());
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(name, HttpStatus.NOT_FOUND);
+        }
     }
 }
