@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 
@@ -24,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -73,6 +75,8 @@ public class AppController {
 //        response.sendRedirect("/login");
 //    }
 
+
+
     @RequestMapping(value = "/getAccessToken", method = RequestMethod.GET)
     public ResponseEntity<?> getAccessToken(@RequestParam String code) throws  IOException{
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -81,10 +85,23 @@ public class AppController {
     }
 
 
-    @RequestMapping(value = "/test", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> test(@RequestBody JsonNode node) throws  IOException{
-        System.out.println("Code: " + node.toString());
-        return new ResponseEntity<>(node, HttpStatus.OK);
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public void logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws  IOException{
+        System.out.println("entered logout point");
+        session.invalidate();
+        final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+            auth.setAuthenticated(false);
+            SecurityContextHolder.clearContext();
+            SecurityContextHolder.getContext().setAuthentication(null);
+        }
+
+        Cookie cookieWithSlash = new Cookie("JSESSIONID", null);
+        cookieWithSlash.setPath(request.getContextPath() + "/");
+        cookieWithSlash.setDomain("auth-server");
+        cookieWithSlash.setMaxAge(0);
+        response.addCookie(cookieWithSlash); // For Tomcat
     }
 
     @RequestMapping(value = "/save", method = {RequestMethod.POST, RequestMethod.GET}, consumes = MediaType.APPLICATION_JSON_VALUE)

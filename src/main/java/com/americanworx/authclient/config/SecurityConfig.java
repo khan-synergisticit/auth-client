@@ -86,7 +86,7 @@ public class SecurityConfig {
 //
 //                })
                 .oauth2Login(login -> login.successHandler(successHandler))
-                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()))
+                 .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(oidcLogoutSuccessHandler()))
                  .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
 
