@@ -85,7 +85,7 @@ public class AppController {
     }
 
 
-    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public void logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws  IOException{
         System.out.println("entered logout point");
         session.invalidate();
