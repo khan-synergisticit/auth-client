@@ -5,6 +5,7 @@ import com.americanworx.authclient.domain.user.User;
 import com.americanworx.authclient.service.app.AppService;
 import com.americanworx.authclient.service.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +24,7 @@ public class UserController {
     @Autowired private AppService appService;
 
     @RequestMapping(value = "/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getUserData() {
+    public ResponseEntity<?> getUserData(HttpServletRequest request, HttpServletResponse response) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Security details: " + authentication.getDetails().toString());
         String name = authentication.getName();
