@@ -36,6 +36,7 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -66,7 +67,8 @@ public class SecurityConfig {
             SessionCreationPolicy.ALWAYS
         ))
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
-                 .csrf(AbstractHttpConfigurer::disable)
+                .csrf(c -> c.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                 //.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
                             .requestMatchers( "/save", "/getAccessToken").permitAll()
@@ -84,9 +86,8 @@ public class SecurityConfig {
 //
 //                })
                 .oauth2Login(login -> login.successHandler(successHandler))
-                 .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(oidcLogoutSuccessHandler()).permitAll())
+                 .logout(logout -> logout.logoutSuccessHandler(oidcLogoutSuccessHandler()))
                  .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
-                //.oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
 
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt->jwt.decoder(jwtDecoder())));
