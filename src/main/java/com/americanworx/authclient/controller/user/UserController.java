@@ -30,8 +30,7 @@ public class UserController {
         System.out.println("name: " + name);
         User user = userService.getUserByEmail(name);
         if(user != null) {
-
-            return ResponseEntity.ok(user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }else {
             return new ResponseEntity<>(name, HttpStatus.NOT_FOUND);
         }
