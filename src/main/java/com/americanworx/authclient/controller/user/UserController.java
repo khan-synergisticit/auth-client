@@ -22,7 +22,7 @@ public class UserController {
     @Autowired private UserService userService;
     @Autowired private AppService appService;
 
-    @RequestMapping(value = "/find", method = RequestMethod.GET)
+    @RequestMapping(value = "/find", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserData() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("Security details: " + authentication.getDetails().toString());
