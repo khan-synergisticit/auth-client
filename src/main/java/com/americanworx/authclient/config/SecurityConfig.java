@@ -77,7 +77,8 @@ public class SecurityConfig {
 //
 //                })
 
-         http.headers(headers -> headers.referrerPolicy(referrerPolicyConfig -> referrerPolicyConfig.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)))
+         http
+//                 .headers(headers -> headers.referrerPolicy(referrerPolicyConfig -> referrerPolicyConfig.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)))
                  .cors(cors->cors.configurationSource(corsConfigurationSource()))
                  .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
@@ -103,6 +104,7 @@ public class SecurityConfig {
             System.out.println("1: " + authentication.getPrincipal());
             System.out.println("2: " + authentication.getCredentials());
             System.out.println("3: " + authentication.getAuthorities());
+            System.out.println("4: " + authentication.getDetails());
             OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
@@ -120,17 +122,17 @@ public class SecurityConfig {
                     token.setTokenType("access_token");
                     token.setExpiresAt(accessToken.getExpiresAt());
                     //userClient.sendUser(token, Constants.SHOP_URL + ":8080/loggedIn");
-
-                    Cookie cookie = new Cookie("token", token.getTokenValue());
-                    cookie.setDomain(Constants.SHOP_URL_BASE);
-                    cookie.setPath("/");
-                    cookie.setHttpOnly(false);
-                    Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
-                    cookie.setMaxAge(duration.toSecondsPart());
-                    response.addCookie(cookie);
-                    System.out.println("cookie: " + cookie.getValue());
-                    response.addHeader("x-custom-header", token.toString());
-                    response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn?code=" + accessToken.getTokenValue());
+//
+//                    Cookie cookie = new Cookie("token", token.getTokenValue());
+//                    cookie.setDomain(Constants.SHOP_URL_BASE);
+//                    cookie.setPath("/");
+//                    cookie.setHttpOnly(false);
+//                    Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
+//                    cookie.setMaxAge(duration.toSecondsPart());
+//                    response.addCookie(cookie);
+//                    System.out.println("cookie: " + cookie.getValue());
+//                    response.addHeader("x-custom-header", token.toString());
+                    response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn");
                     //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn?code=" + accessToken.getTokenValue());
 
                 }
