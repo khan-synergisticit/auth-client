@@ -128,9 +128,7 @@ public class SecurityConfig {
 //                    cookie.setMaxAge(duration.toSecondsPart());
 //                    response.addCookie(cookie);
 //                    System.out.println("cookie: " + cookie.getValue());
-                    response.setContentType("text/html");
-                    request.setAttribute("access_token", accessToken.getTokenValue());
-                    response.addHeader("token", token.toString());
+                    response.setContentType("application/json");
                     redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn");
 
                 }
