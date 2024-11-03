@@ -118,20 +118,20 @@ public class SecurityConfig {
                     token.setTokenValue(accessToken.getTokenValue());
                     token.setTokenType("access_token");
                     token.setExpiresAt(accessToken.getExpiresAt());
-                    userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
+                    userClient.sendUser(token, Constants.SHOP_URL + ":8080/loggedIn");
 
-                    Cookie cookie = new Cookie("token", token.getTokenValue());
-                    cookie.setDomain(Constants.SHOP_URL_BASE);
-                    cookie.setPath("/");
-                    cookie.setHttpOnly(false);
-                    Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
-                    cookie.setMaxAge(duration.toSecondsPart());
-                    response.addCookie(cookie);
-                    System.out.println("cookie: " + cookie.getValue());
-                    response.setContentType("application/json");
+//                    Cookie cookie = new Cookie("token", token.getTokenValue());
+//                    cookie.setDomain(Constants.SHOP_URL_BASE);
+//                    cookie.setPath("/");
+//                    cookie.setHttpOnly(false);
+//                    Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
+//                    cookie.setMaxAge(duration.toSecondsPart());
+//                    response.addCookie(cookie);
+//                    System.out.println("cookie: " + cookie.getValue());
+//                    response.setContentType("application/json");
 
 
-                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn?code=" + accessToken.getTokenValue());
+                    redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080");
 
                 }
 
