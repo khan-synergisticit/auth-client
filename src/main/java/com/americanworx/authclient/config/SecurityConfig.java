@@ -124,7 +124,7 @@ public class SecurityConfig {
                     token.setTokenType("access_token");
                     token.setSessionId(details.getSessionId());
                     token.setExpiresAt(accessToken.getExpiresAt());
-                    //userClient.sendUser(token, Constants.SHOP_URL + ":8080/loggedIn");
+                    userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
 //
 //                    Cookie cookie = new Cookie("token", token.getTokenValue());
 //                    cookie.setDomain(Constants.SHOP_URL_BASE);
