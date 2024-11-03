@@ -105,6 +105,8 @@ public class SecurityConfig {
             System.out.println("2: " + authentication.getCredentials());
             System.out.println("3: " + authentication.getAuthorities());
             System.out.println("4: " + authentication.getDetails());
+            WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
+            ;
             OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
                         .principal(authentication)
                         .attributes(attrs -> {
@@ -120,6 +122,7 @@ public class SecurityConfig {
                     Token token = new Token();
                     token.setTokenValue(accessToken.getTokenValue());
                     token.setTokenType("access_token");
+                    token.setSessionId(details.getSessionId());
                     token.setExpiresAt(accessToken.getExpiresAt());
                     //userClient.sendUser(token, Constants.SHOP_URL + ":8080/loggedIn");
 //

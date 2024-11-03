@@ -13,5 +13,6 @@ import java.time.Instant;
 public class Token {
     private String tokenValue;
     private String tokenType;
+    private String sessionId;
     private Instant expiresAt;
 }
