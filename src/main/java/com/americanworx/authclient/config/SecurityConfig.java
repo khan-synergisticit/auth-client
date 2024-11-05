@@ -83,14 +83,14 @@ public class SecurityConfig {
                  .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                            .requestMatchers("/logout").authenticated()
+//                            .requestMatchers("/logout").authenticated()
                           .requestMatchers( "/save", "/getAccessToken").permitAll()
 
                             .anyRequest().authenticated();
 
                 })
                 .oauth2Login(login -> login.successHandler(successHandler))
-                 .logout(logout -> logout.logoutUrl("/logout").logoutSuccessHandler(oidcLogoutSuccessHandler()))
+                 .logout(logout -> logout.logoutUrl("/logout").permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()))
                  .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
 
