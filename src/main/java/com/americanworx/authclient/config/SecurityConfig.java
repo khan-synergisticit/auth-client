@@ -83,7 +83,9 @@ public class SecurityConfig {
                  .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
+                            .requestMatchers("/logout").authenticated()
                           .requestMatchers( "/save", "/getAccessToken").permitAll()
+
                             .anyRequest().authenticated();
 
                 })
