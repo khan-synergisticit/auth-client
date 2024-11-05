@@ -135,7 +135,7 @@ public class SecurityConfig {
 //                    response.addCookie(cookie);
 //                    System.out.println("cookie: " + cookie.getValue());
 //                    response.addHeader("x-custom-header", token.toString());
-                    response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn");
+                    response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn?success");
                     //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn?code=" + accessToken.getTokenValue());
 
                 }
