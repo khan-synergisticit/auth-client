@@ -60,10 +60,10 @@ spring:
         # for any unknown provider with their issuer URI
         provider:
           spring:
-            issuer-uri: http://localhost:8040
+            issuer-uri: http://192.168.1.129:8040
 
       # Since our application acts as both authorization client and resource server,
       # here is the configuration for resource server
       resource-server:
         jwt:
-          issuer-uri: http://localhost:8040
+          issuer-uri: http://192.168.1.129:8040
