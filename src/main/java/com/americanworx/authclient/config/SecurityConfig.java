@@ -5,8 +5,6 @@ import com.americanworx.authclient.client.UserClient;
 import com.americanworx.authclient.domain.token.Token;
 import jakarta.servlet.ServletException;
 
-
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -21,9 +19,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 
@@ -36,9 +33,6 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -64,26 +58,12 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
-//        http.sessionManagement( sess -> sess.sessionCreationPolicy(
-//            SessionCreationPolicy.ALWAYS
-//        ))
-//                .cors(cors->cors.configurationSource(corsConfigurationSource()))
-//                .csrf(c -> c.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-//                 //.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
-//                    authorizationManagerRequestMatcherRegistry
-//                            .requestMatchers( "/save", "/getAccessToken").permitAll()
-//                            .anyRequest().authenticated();
-//
-//                })
 
          http
-//                 .headers(headers -> headers.referrerPolicy(referrerPolicyConfig -> referrerPolicyConfig.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.UNSAFE_URL)))
                  .cors(cors->cors.configurationSource(corsConfigurationSource()))
                  .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-//                            .requestMatchers("/logout").authenticated()
                           .requestMatchers( "/save", "/getAccessToken").permitAll()
 
                             .anyRequest().authenticated();
@@ -103,10 +83,6 @@ public class SecurityConfig {
 
         @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-            System.out.println("1: " + authentication.getPrincipal());
-            System.out.println("2: " + authentication.getCredentials());
-            System.out.println("3: " + authentication.getAuthorities());
-            System.out.println("4: " + authentication.getDetails());
             WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
             ;
             OAuth2AuthorizeRequest authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId("shopping")
@@ -127,16 +103,7 @@ public class SecurityConfig {
                     token.setSessionId(details.getSessionId());
                     token.setExpiresAt(accessToken.getExpiresAt());
                     userClient.sendUser(token, Constants.SHOP_URL + ":8080/api/user");
-//
-//                    Cookie cookie = new Cookie("token", token.getTokenValue());
-//                    cookie.setDomain(Constants.SHOP_URL_BASE);
-//                    cookie.setPath("/");
-//                    cookie.setHttpOnly(false);
-//                    Duration duration = Duration.between(Instant.now(), accessToken.getExpiresAt() );
-//                    cookie.setMaxAge(duration.toSecondsPart());
-//                    response.addCookie(cookie);
-//                    System.out.println("cookie: " + cookie.getValue());
-//                    response.addHeader("x-custom-header", token.toString());
+
                     response.sendRedirect(Constants.SHOP_URL + ":8080/loggedIn");
                     //redirectStrategy.sendRedirect(request, response, Constants.SHOP_URL + ":8080/loggedIn?code=" + accessToken.getTokenValue());
 
