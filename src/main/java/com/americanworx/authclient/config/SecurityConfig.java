@@ -63,7 +63,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                          .requestMatchers( "/save", "/getAccessToken").permitAll()
+                          .requestMatchers( "/**").permitAll()
 
                             .anyRequest().authenticated();
 
