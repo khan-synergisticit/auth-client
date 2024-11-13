@@ -104,7 +104,7 @@ public class AppController {
         response.addCookie(cookieWithSlash); // For Tomcat
     }
 
-    @RequestMapping(value = "/save", method = {RequestMethod.POST, RequestMethod.GET}, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createUser(@RequestBody JsonNode json) throws JsonProcessingException {
         System.out.println("User: " + json.toString());
         User user = new User();
