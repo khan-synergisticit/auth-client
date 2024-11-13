@@ -60,20 +60,20 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
 
          http
-                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
-                 .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
                           .requestMatchers( "/save", "/getAccessToken").permitAll()
 
                             .anyRequest().authenticated();
 
-                })
-                .oauth2Login(login -> login.successHandler(successHandler))
+                });
+               http.oauth2Login(login -> login.successHandler(successHandler))
                  .logout(logout -> logout.logoutUrl("/logout").permitAll().logoutSuccessHandler(oidcLogoutSuccessHandler()))
                  .oidcLogout(logout -> logout.backChannel(Customizer.withDefaults()))
                 .oauth2Client(code -> code.authorizationCodeGrant(codeGrant ->codeGrant.accessTokenResponseClient(accessTokenResponseClient())))
-
+                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
+                 .csrf(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt->jwt.decoder(jwtDecoder())));
 
          return http.build();
